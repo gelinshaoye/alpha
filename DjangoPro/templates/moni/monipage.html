@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="/static/js/echarts.common.min.js"></script>
+    <script>
+        var chartArray = new Array();
+    </script>
+    <style>
+        body {
+            font-family: "华文细黑";
+            background: url("/static/image/background.png") no-repeat;
+            background-size: cover;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            color: #FFFFFF;
+        }
+
+        .titlebg {
+            width: 100%;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            background: url("/static/image/title.png");
+        }
+
+        .zitisize {
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .zitilittlesize {
+            color: #ffffff;
+            font-size: 12px;
+        }
+
+        .divone {
+            background: url("/static/image/sbg.png");
+
+        }
+
+        .divfont {
+            width: 49.4%;
+            text-align: center;
+            color: #FFFFFF;
+            position: absolute;
+            z-index: 105;
+        }
+
+        .divtwo {
+            color: #FFFFFF;
+            position: absolute;
+            z-index: 105;
+        }
+
+        .pagediv {
+            height: 30px;
+            width: 1325px;
+            {#border: 2px black solid;#}
+            float: left;
+            margin-top: 7px;
+            margin-left: 10px;
+        }
+
+        .pagination {
+            text-align: center;
+            font-size: 12px;
+            padding: 5px 0;
+            display: inline-block
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 0 10px;
+            height: 28px;
+            line-height: 28px;
+            border: 1px solid #2e4066;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #fff;
+            cursor: pointer;
+            margin-right: 5px;
+            background: url("/static/image/sbg.png");
+        }
+
+        .pagination a:hover:not(.disabled):not(.current) {
+            color: #050505
+        }
+
+        .pagination a.disabled{
+            color: #bfbfbf;
+            background: url("/static/image/sbg.png");
+            cursor: no-drop;
+            border: 1px solid #ddd;
+        }
+
+        .pagination a.current{
+            color: #fff;
+            background: #33ddfc;
+            border: 1px solid #3382ff;
+        }
+    </style>
+    <title>实时监控</title>
+</head>
+
+<body>
+<div align="center" style="height:47px">
+    <img src="/static/image/biaoti.png"/>
+</div>
+<div style="width: 98%;height: 100%;margin-left: 1%;">
+    {% for foo in io.object_list %}
+        <div style="width: 49.4%;float: left;height: 43%;margin-top: 7px;margin-left:5px">
+            <div class="titlebg">
+
+                <div class="divfont">
+                    <span>当前服务器</span>
+                </div>
+
+            </div>
+            <div class="divone" style="width: 100%;height: 90%;">
+                <div style="width: 36.4%;float: left;height: 100%;">
+                    <div style="width: 100%;height: 20%;">
+                        <div style="width:42%;float: left;text-align: left;height: 100%;text-align: center;">
+                            <div style="margin-top: 8px;">
+                                <font class="zitisize">{{ foo.0 }}</font>
+                            </div>
+                            <div>
+                                <font class="zitilittlesize">服务器</font>
+                            </div>
+                        </div>
+                        <div style="width: 2px;height: 35px;background-color: #2e4066;float: left;margin-top: 10px;"></div>
+                        <div style="width:25%;float: left;text-align: left;height: 100%;text-align: center;">
+                            <div style="margin-top: 8px;">
+                                <font class="zitisize">{{ foo.1 }}</font>
+                            </div>
+                            <div>
+                                <font class="zitilittlesize">机器</font>
+                            </div>
+                        </div>
+                        <div style="width: 2px;height: 35px;background-color: #2e4066;float: left;margin-top: 10px;"></div>
+                        <div style="width:21%;float: left;text-align: right;height: 100%;text-align: center;">
+                            <div style="margin-top: 8px;">
+                                <font class="zitisize">{{ foo.2 }}</font>
+                            </div>
+                            <div>
+                                <font class="zitilittlesize">系统</font>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 100%;height:1%;background-color: #2e4066;"></div>
+                    <div style="width: 100%;margin-top: 2%;height: 10%;margin-left: 10px;width: 150px;">
+                        <font class="zitisize">网络连接状态:
+                            {% if  foo.3  == 0 %}
+                                正常
+                            {% else %}
+                                异常
+                            {% endif %}
+                        </font>
+                    </div>
+                    <div style="width: 100%;height: 18%;margin-left: 10px;width: 150px;">
+                        <font class="zitisize">接收/发送:</font>
+                        <font class="zitisize">{{ foo.5 }}KB/{{ foo.6 }}KB</font>
+                    </div>
+                    <div style="width: 100%;height: 35%">
+                        <div style="float: left;width: 150px;margin-left: 10px;">
+                            <font class="zitisize">第三方连接状态：</font>
+                        </div>
+                        <div style="float: left;height: 100%;overflow:scroll;overflow-x:hidden;width: 170px;margin-left: 10px;">
+                            {% for pat in foo.4 %}
+                                <font class="zitisize">{{ pat.0 }}:
+                                    {% if pat.2 == 'True' %}
+                                        正常
+                                    {% else %}
+                                        异常
+                                    {% endif %}
+                                </font></br>
+                                <font class="zitisize">{{ pat.1 }}:
+                                    {% if pat.3 == 'True' %}
+                                        正常
+                                    {% else %}
+                                        异常
+                                    {% endif %}
+                                </font></br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width:1.5px;height:100%;background-color: #2e4066;float: left;"></div>
+                <div id="{{ foo.0 }}" style="width: 61.4%;float: right;height: 100%;">
+                    <script type="text/javascript">
+                        // 基于准备好的dom，初始化echarts实例
+                        var myChart = echarts.init(document.getElementById('{{ foo.0 }}'));
+                        chartArray.push(myChart)
+
+                        // 指定图表的配置项和数据
+                        option = {
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                {#top:'30%',#}
+                                button: '3%',
+                                height: '70%',
+                                width: 320,
+                                containLabel: true
+                            },
+                            xAxis: {
+                                name: '使用率',
+                                type: 'value',
+                                max: 100,
+                                axisLine: {
+                                    lineStyle: {
+                                        color: '#2796ff',
+                                    }
+                                },
+
+                                axisLabel: {
+                                    formatter: '{value} %',
+                                    textStyle: {
+                                        color: '#ffffff',
+                                    }
+                                },
+                                splitLine: {
+                                    show: false
+                                }
+                            },
+                            yAxis: {
+                                name: '类别',
+                                type: 'category',
+                                data: ['CPU', '内存', '交换区', '磁盘'],
+                                axisLine: {
+                                    lineStyle: {
+                                        color: '#2796ff',
+                                    }
+                                },
+                                axisLabel: {
+                                    textStyle: {
+                                        color: '#ffffff',
+                                    }
+                                }
+                            },
+                            series: [
+                                {
+                                    type: 'bar',
+                                    stack: '总量',
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'insideTop',
+                                        },
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: function (params) {
+                                                var colorList = ['#0679e3', '#90c1fc'];
+                                                return new echarts.graphic.LinearGradient(0, 0, 1, 0,
+                                                    [
+                                                        {offset: 0, color: colorList[0]},
+                                                        {offset: 1, color: colorList[1]}
+                                                    ]);
+                                            },
+                                        }
+                                    },
+                                    data: {{ foo.7|safe }},
+                                    barWidth: 20
+                                },
+                                {
+                                    type: 'bar',
+                                    stack: '总量',
+                                    label: {
+                                        normal: {
+                                            show: true,
+                                            position: 'insideTop'
+                                        }
+                                    },
+                                    itemStyle: {
+                                        normal: {
+                                            color: function (params) {
+                                                var colorList = ['#ffcc00', '#ff2a00'];
+                                                return new echarts.graphic.LinearGradient(0, 0, 1, 0,
+                                                    [
+                                                        {offset: 0, color: colorList[0]},
+                                                        {offset: 1, color: colorList[1]}
+                                                    ]);
+                                            },
+                                        }
+                                    },
+                                    data: {{ foo.8|safe }},
+                                    barWidth: 20
+                                }
+                            ]
+                        };
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    </script>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="pagediv">
+        <div class="pagination">
+            <span><a href="/moni/index">首页</a></span>
+            {% if io.has_previous %}
+                <span><a href="/moni/curpage?page={{ io.previous_page_number }}">上一页</a></span>
+            {% else %}
+                <span ><a href="#" class="disabled">上一页</a></span>
+            {% endif %}
+
+            {% for num in paginator.page_range %}
+                {% if num == currentPage %}
+                    <span ><a href="/moni/curpage?page={{ num }}" class="current">{{ num }}</a></span>
+                {% else %}
+                    <span><a href="/moni/curpage?page={{ num }}">{{ num }}</a></span>
+                {% endif %}
+            {% endfor %}
+
+            {% if io.has_next %}
+                <span><a href="/moni/curpage?page={{ io.next_page_number }}">下一页</a></span>
+            {% else %}
+                <span><a href="#" class="disabled">下一页</a></span>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        window.onresize = function () {
+            chartArray[0].resize();
+            chartArray[1].resize();
+            chartArray[2].resize();
+            chartArray[3].resize();
+        }
+    </script>
+    {% if io.has_next %}
+        <script>
+            function JumpToURL() {
+                location = '/moni/curpage?page={{ io.next_page_number }}';
+            }
+
+            setTimeout('JumpToURL()', 5000);
+        </script>
+    {% else %}
+        <script>
+            function JumpToURL() {
+                location = '/moni/curpage?page=1';
+            }
+
+            setTimeout('JumpToURL()', 5000);
+        </script>
+    {% endif %}
+</div>
+</body>
+</html>

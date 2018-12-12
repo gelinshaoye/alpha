@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>服务器拓扑</title>
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <style type="text/css">
+        body {
+            background: url("/static/image/background.png") no-repeat;
+        }
+
+        .main_div {
+            height: 600px;
+        }
+
+        .sec_div {
+            background: url("/static/image/bgtop.png") no-repeat;
+            width: 15%;
+            height: 580px;
+            float: left;
+            margin-top: 10px;
+            margin-left: 1.5%;
+        }
+
+        .bm_div {
+            width: 80px;
+            height: 30px;
+            margin-top: 8px;
+            margin-right: auto;
+            margin-left: auto;
+            margin-bottom: 10px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .btn_div1 {
+            height: 43px;
+            width: 190px;
+            margin-left: 35px;
+            left: 33px;
+            top: 122px;
+            margin-right: auto;
+            color: #999;
+            text-align: center;
+        }
+
+        .fw_div {
+            height: 43px;
+            width: 77px;
+            font-size: 12px;
+            color: #FFFFFF;
+            text-align: center;
+            background: url("/static/image/tbg.png") no-repeat;
+            float: left;
+        }
+
+        .btn1 {
+            {#background: url("/static/image/day.png") no-repeat;#}
+            height: 43px;
+            width: 44px;
+            {#float: left;#}
+            {#text-align: center;#}
+            float: left;
+        }
+
+        .btn1_btn {
+            background: url("/static/image/day.png") no-repeat;
+            height: 43px;
+            width: 44px;
+            border: none;
+        }
+
+        .btn1_err {
+            background: url("/static/image/warn.png") no-repeat;
+            height: 43px;
+            width: 44px;
+            border: none;
+        }
+
+        .btn2 {
+            {#background: url("/static/image/week.png") no-repeat;#}
+            height: 43px;
+            width: 44px;
+            float: left;
+            {#text-align: center;#}
+            float: left;
+        }
+
+        .btn2_btn {
+            background: url("/static/image/week.png") no-repeat;
+            height: 43px;
+            width: 44px;
+            border: none;
+        }
+
+        .pagediv {
+            height: 30px;
+            width: 1325px;
+        {#border: 2px black solid;#} float: left;
+            margin-top: 8px;
+            margin-left: 10px;
+        }
+
+        .pagination {
+            text-align: center;
+            font-size: 12px;
+            padding: 5px 0;
+            display: inline-block;
+            margin-left: 50%;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 0 10px;
+            height: 28px;
+            line-height: 28px;
+            border: 1px solid #2e4066;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #fff;
+            cursor: pointer;
+            margin-right: 5px;
+            background: url("/static/image/sbg.png");
+        }
+
+        .pagination a:hover:not(.disabled):not(.current) {
+            color: #050505
+        }
+
+        .pagination a.disabled {
+            color: #bfbfbf;
+            background: url("/static/image/sbg.png");
+            cursor: no-drop;
+            border: 1px solid #ddd;
+        }
+
+        .pagination a.current {
+            color: #fff;
+            background: #33ddfc;
+            border: 1px solid #3382ff;
+        }
+    </style>
+    <script>
+        $(function () {
+            function refresh() {
+                {#$("#btn168").removeClass('btn1');#}
+                {#$("#btn168").addClass('btnerr1');#}
+                {#alert("btn168")#}
+                $.get('/moni/monimchinfohandle/', function (data) {
+                    for (var i = 0; i < data.data_list.length; i++) {
+                        if (data.data_list[i][1] == '0') {
+                            var id = "#btn" + data.data_list[i][0]+"_btn";
+                            if ($(id).attr("class") == "btn1_err") {
+                                $(id).removeClass('btn1_err');
+                                $(id).addClass('btn1_btn');
+                            }
+                        }
+                        else {
+                            var id = "#btn" + data.data_list[i][0]+"_btn";
+                            if ($(id).attr("class") == "btn1_btn") {
+                                $(id).removeClass('btn1_btn');
+                                $(id).addClass('btn1_err');
+                            }
+                        }
+                    }
+                });
+            }
+
+            setInterval(refresh, 30000)
+        })
+    </script>
+</head>
+
+<body>
+<div id="main_div" class="main_div">
+    {% for fw in fwlist %}
+        <div id="sec_div" class="sec_div">
+            <div id="bm_div" class="bm_div">{{ fw.0 }}</div>
+            {% for value in data %}
+                {% if value.0 in fw.1 %}
+                    <div id="btn_div1" class="btn_div1">
+                        <div id="fw_div" class="fw_div">{{ value.0 }}</div>
+                        {% if value.1 == '0' %}
+{#                            <div id="btn{{ value.0 }}" class="btn1"><a#}
+{#                                    href="/moni/curpageone/?IP=192.168.1.{{ value.0 }}">日</a>#}
+{#                            </div>#}
+                              <div id="btn1" class="btn1">
+                                <input type="button" id="btn{{ value.0 }}_btn" class="btn1_btn" value="日"
+                                   onClick="location='/moni/curpageone/?IP=192.168.1.{{ value.0 }}'">
+                              </div>
+                        {% else %}
+                              <div id="btn1" class="btn1">
+                                <input type="button" id="btn{{ value.0 }}_btn" class="btn1_err" value="日"
+                                   onClick="location='/moni/curpageone/?IP=192.168.1.{{ value.0 }}'">
+                              </div>
+                        {% endif %}
+                        {#                        <div id="btn2" class="btn2"><a href="/moni/avgpageone/?IP=192.168.1.{{ value.0 }}">周</a></div>#}
+                        <div id="btn2" class="btn2">
+                            <input type="button" class="btn2_btn" value="月"
+                                   onClick="location='/moni/avgpageone/?IP=192.168.1.{{ value.0 }}'">
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+<div class="pagediv">
+    <div class="pagination">
+        <span><a href="/moni/index/">返回</a></span>
+    </div>
+</div>
+</body>
+</html>

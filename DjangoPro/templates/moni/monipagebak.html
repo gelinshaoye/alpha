@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>服务器监控信息</title>
+    <script type="text/javascript" src="/static/js/echarts.common.min.js"></script>
+    <style>
+        .main {
+            height: 605px;
+            width: 1325px;
+            border: 2px black solid;
+            margin-top: 30px;
+            margin-left: 10px;
+        }
+
+        .sec {
+            height: 290px;
+            width: 650px;
+            border: 2px black solid;
+            margin-top: 5px;
+            margin-left: 5px;
+            float: left;
+
+        }
+
+        .thr1 {
+            height: 275px;
+            width: 180px;
+            border: 2px black solid;
+            margin-top: 5px;
+            margin-left: 5px;
+            float: left;
+
+        }
+
+        .thr2 {
+            height: 275px;
+            width: 445px;
+            border: 2px black solid;
+            margin-top: 5px;
+            margin-left: 5px;
+            float: left;
+
+        }
+
+        .fou1 {
+            height: 65px;
+            width: 165px;
+            border: 2px black solid;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+
+        .fou2 {
+            height: 185px;
+            width: 165px;
+            border: 2px black solid;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+
+        .pagediv {
+            height: 40px;
+            width: 1325px;
+            border: 2px black solid;
+            margin-left: 10px;
+        }
+
+        .pagination {
+            text-align: center;
+            font-size: 12px;
+            padding: 5px 0;
+            display: inline-block
+        }
+
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 0 10px;
+            height: 28px;
+            line-height: 28px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #999;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .pagination a:hover:not(.disabled):not(.current), .pagination span:hover:not(.disabled):not(.current) {
+            color: #f04848
+        }
+
+        .pagination a.disabled, .pagination span.disabled {
+            color: #bfbfbf;
+            background: #f5f5f5;
+            cursor: no-drop;
+            border: 1px solid #ddd;
+        }
+
+        .pagination a.current, .pagination span.current {
+            color: #fff;
+            background: #f04848;
+            border: 1px solid #f04848;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="main">
+    {% for foo in io.object_list %}
+        <div class="sec">
+            <div class="thr1">
+                <div class="fou1">
+                    服务器:{{ foo.0 }} <br>机器:{{ foo.1 }} <br>系统:{{ foo.2 }}
+                </div>
+                <div class="fou2">
+                    <div>
+                        网络连接状态：
+                        {% if  foo.3  == 0 %}
+                            正常
+                        {% else %}
+                            异常
+                        {% endif %}
+                    </div>
+                    <div>
+                        接收/发送：{{ foo.5 }}KB/{{ foo.6 }}KB
+                    </div>
+                    <div>
+                        第三方连接状态：
+                        {% for pat in foo.4 %}
+                            {{ pat.0 }}:
+                            {% if pat.2 == 'True' %}
+                                正常
+                            {% else %}
+                                异常
+                            {% endif %}
+                            {{ pat.1 }}:
+                            {% if pat.3 == 'True' %}
+                                正常
+                            {% else %}
+                                异常
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="thr2" id="{{ foo.0 }}">
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById('{{ foo.0 }}'));
+
+                    // 指定图表的配置项和数据
+                    option = {
+                        backgroundColor: '#0000CD',
+                        title: {
+                            text: '当前服务器信息'
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            width: 375,
+                            containLabel: true
+                        },
+                        xAxis: {
+                            name: '使用率',
+                            type: 'value',
+                            max: 100,
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#2796ff',
+                                }
+                            },
+
+                            axisLabel: {
+                                formatter: '{value} %',
+                                textStyle:{
+                                    color: '#ffffff',
+                                }
+                            },
+                            splitLine: {
+                                show: false
+                            }
+                        },
+                        yAxis: {
+                            name: '类别',
+                            type: 'category',
+                            data: ['CPU', '内存', '交换区', '磁盘'],
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#2796ff',
+                                }
+                            },
+                            axisLabel: {
+                                textStyle:{
+                                    color: '#ffffff',
+                                }
+                            }
+                        },
+                        series: [
+                            {
+                                type: 'bar',
+                                stack: '总量',
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        position: 'insideTop',
+                                    },
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: function (params) {
+                                            var colorList = ['#0679e3','#90c1fc'];
+                                            return new echarts.graphic.LinearGradient(0, 0, 1, 0,
+                                                [
+                                                    {offset: 0, color: colorList[0]},
+                                                    {offset: 1, color: colorList[1]}
+                                                ]);
+                                        },
+                                    }
+                                },
+                                data: {{ foo.7|safe }},
+                                barWidth: 20
+                            },
+                            {
+                                type: 'bar',
+                                stack: '总量',
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        position: 'insideTop'
+                                    }
+                                },
+                                itemStyle: {
+                                    normal: {
+                                        color: function (params) {
+                                            var colorList = ['#ffcc00', '#ff2a00'];
+                                            return new echarts.graphic.LinearGradient(0, 0, 1, 0,
+                                                [
+                                                    {offset: 0, color: colorList[0]},
+                                                    {offset: 1, color: colorList[1]}
+                                                ]);
+                                        },
+                                    }
+                                },
+                                data: {{ foo.8|safe }},
+                                barWidth: 20
+                            }
+                        ]
+                    };
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                </script>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<div class="pagediv">
+    <div class="pagination">
+        <span><a href="/moni/index">首页</a></span>
+        {% if io.has_previous %}
+            <span><a href="/moni/curpage?page={{ io.previous_page_number }}">上一页</a></span>
+        {% else %}
+            <span class="disabled"><a href="#">上一页</a></span>
+        {% endif %}
+
+        {% for num in paginator.page_range %}
+            {% if num == currentPage %}
+                <span class="current"><a href="/moni/curpage?page={{ num }}">{{ num }}</a></span>
+            {% else %}
+                <span><a href="/moni/curpage?page={{ num }}">{{ num }}</a></span>
+            {% endif %}
+        {% endfor %}
+
+        {% if io.has_next %}
+            <span><a href="/moni/curpage?page={{ io.next_page_number }}">下一页</a></span>
+        {% else %}
+            <span><a href="#">下一页</a></span>
+        {% endif %}
+    </div>
+</div>
+{% if io.has_next %}
+    <script>
+        function JumpToURL() {
+            location = '/moni/curpage?page={{ io.next_page_number }}';
+        }
+
+        setTimeout('JumpToURL()', 5000);
+    </script>
+{% else %}
+    <script>
+        function JumpToURL() {
+            location = '/moni/curpage?page=1';
+        }
+
+        setTimeout('JumpToURL()', 5000);
+    </script>
+{% endif %}
+</body>
+</html>

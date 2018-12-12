@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>监控页面</title>
+    <script type="text/javascript" src="/static/js/echarts.common.min.js"></script>
+    <style>
+        .main {
+            height: 650px;
+            width: 1325px;
+            border: 2px black solid;
+            margin-top: 30px;
+            margin-left: 10px;
+        }
+
+        .sec {
+            height: 260px;
+            width: 431px;
+            border: 2px black solid;
+            margin-top: 5px;
+            margin-left: 5px;
+            float: left;
+
+        }
+
+        .sec1 {
+            height: 50px;
+            width: 600px;
+            border: 2px black solid;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+
+        .pagediv {
+            height: 40px;
+            width: 1311px;
+            border: 2px black solid;
+            margin-left: 5px;
+            margin-top: 5px;
+            float: left;
+        }
+
+        .pagination {
+            text-align: center;
+            font-size: 12px;
+            padding: 5px 0;
+            display: inline-block
+        }
+
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 0 10px;
+            height: 28px;
+            line-height: 28px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #999;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .pagination a:hover:not(.disabled):not(.current), .pagination span:hover:not(.disabled):not(.current) {
+            color: #f04848
+        }
+
+        .pagination a.disabled, .pagination span.disabled {
+            color: #bfbfbf;
+            background: #f5f5f5;
+            cursor: no-drop;
+            border: 1px solid #ddd;
+        }
+
+        .pagination a.current, .pagination span.current {
+            color: #fff;
+            background: #f04848;
+            border: 1px solid #f04848;
+        }
+    </style>
+</head>
+<body>
+<div class="main">
+    <div class="sec1">服务器:{{ list.0 }}</div>
+    {% for i in list.2 %}
+        <div class="sec" id={{ i.0 }}>
+            {% if i.0 == 1 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '内存使用率周趋势图'
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '%',
+                            //max: 100,
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value'
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 2 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: 'CPU使用率周趋势图'
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '%',
+                            //max: 100,
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value'
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 3 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '交换分区使用率周趋势图'
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '%',
+                            //max: 100,
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value'
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 4 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '磁盘使用率周趋势图'
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '%',
+                            //max: 100,
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value'
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 5 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '每秒输入周趋势图'
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '(单位kb/s)',
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value'
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 6 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '每秒输出周趋势图'
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '(单位kb/s)',
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value'
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <div class="pagediv">
+        <div class="pagination">
+            <span><a href="/moni/index">首页</a></span>
+            {% if prePage != None %}
+                <span><a href="/moni/avgpage?page={{ prePage }}">上一页</a></span>
+            {% else %}
+                <span class="disabled"><a href="#">上一页</a></span>
+            {% endif %}
+
+            {% if curPage != startPage %}
+                {% if prePage != startPage %}
+                    {% if prePage != 2 %}
+                        <span><a href="/moni/avgpage?page={{ startPage }}">{{ startPage }}</a></span>
+                        ...
+                        <span><a href="/moni/avgpage?page={{ prePage }}">{{ prePage }}</a></span>
+                        <span class="current"><a href="/moni/avgpage?page={{ curPage }}">{{ curPage }}</a></span>
+                    {% else %}
+                        <span><a href="/moni/avgpage?page={{ startPage }}">{{ startPage }}</a></span>
+                        <span><a href="/moni/avgpage?page={{ prePage }}">{{ prePage }}</a></span>
+                        <span class="current"><a href="/moni/avgpage?page={{ curPage }}">{{ curPage }}</a></span>
+                    {% endif %}
+                {% else %}
+                    <span><a href="/moni/avgpage?page={{ prePage }}">{{ prePage }}</a></span>
+                    <span class="current"><a href="/moni/avgpage?page={{ curPage }}">{{ curPage }}</a></span>
+                {% endif %}
+
+            {% else %}
+                <span class="current"><a href="/moni/avgpage?page={{ curPage }}">{{ curPage }}</a></span>
+            {% endif %}
+
+            {% if curPage != endPage %}
+                {% if nexPage != endPage %}
+                    <span><a href="/moni/avgpage?page={{ nexPage }}">{{ nexPage }}</a></span>
+                    ...
+                    <span><a href="/moni/avgpage?page={{ endPage }}">{{ endPage }}</a></span>
+                {% else %}
+                    <span><a href="/moni/avgpage?page={{ endPage }}">{{ endPage }}</a></span>
+                {% endif %}
+            {% endif %}
+
+            {% if nexPage != None %}
+                <span><a href="/moni/avgpage?page={{ nexPage }}">下一页</a></span>
+            {% else %}
+                <span><a href="#">下一页</a></span>
+            {% endif %}
+        </div>
+
+        {% if nexPage != None %}
+            <script>
+                function JumpToURL() {
+                    location = '/moni/avgpage?page={{ nexPage }}';
+                }
+
+                setTimeout('JumpToURL()', 5000);
+            </script>
+        {% else %}
+            <script>
+                function JumpToURL() {
+                    location = '/moni/avgpage?page=1';
+                }
+
+                setTimeout('JumpToURL()', 5000);
+            </script>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

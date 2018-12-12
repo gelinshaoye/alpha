@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="/static/js/echarts.common.min.js"></script>
+    <script>
+        var chartArray = new Array();
+    </script>
+    <style>
+        body {
+            font-family: "华文细黑";
+            background: url("/static/image/background.png") no-repeat;
+            background-size: cover;
+        }
+
+        html, body {
+            width: 100%;
+            height: 95%;
+            margin: 0px;
+            color: #FFFFFF;
+        }
+
+        .titlebg {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            background: url("/static/image/title1.png");
+        }
+
+        .zitisize {
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .zitilittlesize {
+            color: #ffffff;
+            font-size: 12px;
+        }
+
+        .divone {
+            background: url("/static/image/sbg.png");
+
+        }
+
+        .divfont {
+            width: 100%;
+            text-align: left;
+            color: #FFFFFF;
+            position: absolute;
+            z-index: 105;
+            margin-left: 20px;
+        }
+
+        .divtwo {
+            color: #FFFFFF;
+            position: absolute;
+            z-index: 105;
+        }
+
+        .pagediv {
+            height: 30px;
+            width: 1325px;
+        {#border: 2px black solid;#} float: left;
+        {#    margin-top: 8px;#}
+            margin-left: 10px;
+        }
+
+        .pagination {
+            text-align: center;
+            font-size: 12px;
+            padding: 5px 0;
+            display: inline-block;
+            margin-left: 45%;
+            float: left;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 0 10px;
+            height: 28px;
+            line-height: 28px;
+            border: 1px solid #2e4066;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #fff;
+            cursor: pointer;
+            margin-right: 5px;
+            background: url("/static/image/sbg.png");
+        }
+
+        .pagination a:hover:not(.disabled):not(.current) {
+            color: #050505
+        }
+
+        .pagination a.disabled {
+            color: #bfbfbf;
+            background: url("/static/image/sbg.png");
+            cursor: no-drop;
+            border: 1px solid #ddd;
+        }
+
+        .pagination a.current {
+            color: #fff;
+            background: #33ddfc;
+            border: 1px solid #3382ff;
+        }
+    </style>
+    <title>周监控</title>
+</head>
+
+<body>
+<div align="center" style="height:55px">
+    <img src="/static/image/biaoti.png"/>
+</div>
+
+<div style="width: 98%;height: 100%;margin-left: 1%;">
+    <div class="titlebg">
+        <div class="divfont">
+            <span>服务器:{{ list.0 }}</span>
+        </div>
+    </div>
+
+    {% for i in list.2 %}
+        <div id="{{ i.0 }}" style="width: 30%;float: left;height: 40%;margin-top: 10px;margin-left:10px">
+            {% if i.0 == 1 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    chartArray.push(myChart)
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '内存使用率周趋势图',
+                            textStyle: {
+                                color: '#33ddfc',
+                            }
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            nameTextStyle: {
+                                color: '#ffffff',
+                            },
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            boundaryGap: false,
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '%',
+                            {#max: 100,#}
+                            nameTextStyle: {
+                                align: 'right',
+                                color: '#ffffff',
+                            },
+                            type: 'value',
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    type: 'dashed',
+                                    color: '#4d6294',
+                                }
+                            }
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                            color: '#f97724',
+                            areaStyle: {
+                                normal: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f97724'},
+                                            {offset: 1, color: '#ddd'}
+                                        ]
+                                    )
+                                }
+                            },
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 2 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: 'CPU使用率周趋势图',
+                            textStyle: {
+                                color: '#33ddfc',
+                            }
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '%',
+                            //max: 100,
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value',
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    type: 'dashed',
+                                    color: '#4d6294',
+                                }
+                            }
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                            color: '#f97724',
+                            areaStyle: {
+                                normal: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f97724'},
+                                            {offset: 1, color: '#ddd'}
+                                        ]
+                                    )
+                                }
+                            },
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 3 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '交换分区使用率周趋势图',
+                            textStyle: {
+                                color: '#33ddfc',
+                            }
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '%',
+                            //max: 100,
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value',
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    type: 'dashed',
+                                    color: '#4d6294',
+                                }
+                            }
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                            color: '#f97724',
+                            areaStyle: {
+                                normal: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f97724'},
+                                            {offset: 1, color: '#ddd'}
+                                        ]
+                                    )
+                                }
+                            },
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 4 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '磁盘使用率周趋势图',
+                            textStyle: {
+                                color: '#33ddfc',
+                            }
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '%',
+                            //max: 100,
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value',
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    type: 'dashed',
+                                    color: '#4d6294',
+                                }
+                            }
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                            color: '#f97724',
+                            areaStyle: {
+                                normal: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f97724'},
+                                            {offset: 1, color: '#ddd'}
+                                        ]
+                                    )
+                                }
+                            },
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 5 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '每秒输入周趋势图',
+                            textStyle: {
+                                color: '#33ddfc',
+                            }
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '(单位KB/s)',
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value',
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    type: 'dashed',
+                                    color: '#4d6294',
+                                }
+                            }
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                            color: '#f97724',
+                            areaStyle: {
+                                normal: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f97724'},
+                                            {offset: 1, color: '#ddd'}
+                                        ]
+                                    )
+                                }
+                            },
+                        }]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% elif i.0 == 6 %}
+                <script type="text/javascript">
+                    // 基于准备好的dom，初始化echarts实例
+                    var myChart = echarts.init(document.getElementById({{ i.0 }}));
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '每秒输出周趋势图',
+                            textStyle: {
+                                color: '#33ddfc',
+                            }
+                        },
+                        xAxis: {
+                            name: '日期',
+                            type: 'category',
+                            boundaryGap: false,
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            data: {{ list.1|safe }}
+                        },
+                        yAxis: {
+                            name: '(单位KB/s)',
+                            nameTextStyle: {
+                                align: 'right'
+                            },
+                            type: 'value',
+                            axisLabel: {
+                                color: '#ffffff'
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#ffffff',
+                                }
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    type: 'dashed',
+                                    color: '#4d6294',
+                                }
+                            }
+                        },
+                        series: [{
+                            data: {{ i.1|safe }},
+                            type: 'line',
+                            color: '#f97724',
+                            areaStyle: {
+                                normal: {
+                                    color: new echarts.graphic.LinearGradient(
+                                        0, 0, 0, 1,
+                                        [
+                                            {offset: 0, color: '#f97724'},
+                                            {offset: 1, color: '#ddd'}
+                                        ]
+                                    )
+                                }
+                            },
+                        }]
+                    }
+                    ;
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                    console.log('js end')
+                </script>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <div class="pagediv">
+        <div class="pagination">
+            <span><a href="/moni/index/">首页</a></span>
+            <span><a href="/moni/monimchinfo/">返回</a></span>
+        </div>
+    </div>
+    <script>
+        window.onresize = function () {
+            chartArray[0].resize();
+            chartArray[1].resize();
+            chartArray[2].resize();
+            chartArray[3].resize();
+            chartArray[4].resize();
+            chartArray[5].resize();
+        }
+    </script>
+
+</div>
+</body>
+</html>
